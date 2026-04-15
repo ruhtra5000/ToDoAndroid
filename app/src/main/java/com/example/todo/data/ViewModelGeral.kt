@@ -15,6 +15,13 @@ class ViewModelGeral (private val dao: TarefaDao) : ViewModel() {
         emptyList()
     )
 
+    fun tarefaPorId(id: Int) = dao.buscarPorId(id)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            null
+        )
+
     fun adicionar (conteudo: String) {
         viewModelScope.launch {
             dao.inserir(Tarefa(conteudo = conteudo))
