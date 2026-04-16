@@ -8,10 +8,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.todo.screens.TelaAdicionar
+import com.example.todo.screens.TelaEditar
 import com.example.todo.screens.TelaPrincipal
 import com.example.todo.screens.TopBar
 
@@ -26,7 +29,16 @@ fun Navegacao() {
         }
 
         composable("telaAdicionar") {
-            TelaAdicionar()
+            TelaAdicionar(navController)
+        }
+
+        composable(
+            route = "telaEditar/{id}",
+            arguments = listOf(navArgument("id") {type = NavType.IntType})
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getInt("id") ?.let { id ->
+                TelaEditar(navController, id)
+            }
         }
     }
 
