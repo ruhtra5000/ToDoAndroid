@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todo.data.dao.TarefaDao
 import com.example.todo.entity.Tarefa
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -15,12 +17,9 @@ class ViewModelGeral (private val dao: TarefaDao) : ViewModel() {
         emptyList()
     )
 
-    fun tarefaPorId(id: Int) = dao.buscarPorId(id)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            null
-        )
+    fun tarefaPorId(id: Int): Flow<Tarefa> {
+        return dao.buscarPorId(id).filterNotNull()
+    }
 
     fun adicionar (conteudo: String) {
         viewModelScope.launch {

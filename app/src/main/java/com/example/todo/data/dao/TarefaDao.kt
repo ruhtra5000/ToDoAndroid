@@ -25,5 +25,5 @@ interface TarefaDao {
     fun listar (): Flow<List<Tarefa>>
 
     @Query("SELECT * FROM Tarefa WHERE id = :id")
-    fun buscarPorId (id: Int): Flow<Tarefa?>
+    fun buscarPorId (id: Int): Flow<Tarefa>
 }
