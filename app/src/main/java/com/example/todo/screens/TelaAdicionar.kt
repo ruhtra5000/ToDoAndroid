@@ -74,7 +74,8 @@ fun TelaAdicionar(navegacao: NavController) {
                     viewModel.adicionar(conteudo)
                     Toast.makeText(contexto, "Tarefa criada!", Toast.LENGTH_SHORT).show()
                     navegacao.popBackStack()
-                }
+                },
+                enabled = (conteudo != "")
             ) {
                 Text(
                     text = "Criar nova tarefa",

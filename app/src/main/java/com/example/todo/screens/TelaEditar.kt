@@ -77,7 +77,8 @@ fun TelaEditar(navegacao: NavController, id: Int) {
                         viewModel.editar(tarefa, novoConteudo)
                         Toast.makeText(contexto, "Tarefa editada!", Toast.LENGTH_SHORT).show()
                         navegacao.popBackStack()
-                    }
+                    },
+                    enabled = (novoConteudo != "")
                 ) {
                     Text(
                         text = "Salvar alterações",
