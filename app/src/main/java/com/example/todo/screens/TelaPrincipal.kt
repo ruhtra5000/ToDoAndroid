@@ -1,6 +1,10 @@
 package com.example.todo.screens
 
+import android.text.Layout
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
@@ -72,6 +77,7 @@ fun TelaPrincipal(navegacao: NavController) {
 
 @Composable
 fun ListaTarefas(navegacao: NavController) {
+    // Conexão com o banco
     val contexto = LocalContext.current
     val db = BancoProvider.getBanco(contexto)
     val dao = db.tarefaDao()
@@ -79,7 +85,14 @@ fun ListaTarefas(navegacao: NavController) {
         factory = ViewModelFactory(dao)
     )
 
+    // Constantes
     val tarefas = viewModel.tarefas.collectAsState().value
+    val coresBotao = ButtonColors(
+        containerColor = Color.Transparent,
+        contentColor = Color.White,
+        disabledContainerColor = Color.Transparent,
+        disabledContentColor = Color.White
+    )
 
     // Confirmação de exclusão genérica
     var abrirDialog by remember { mutableStateOf(false) }
@@ -105,6 +118,7 @@ fun ListaTarefas(navegacao: NavController) {
         )
     }
 
+    // Design
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 15.dp)
@@ -114,67 +128,74 @@ fun ListaTarefas(navegacao: NavController) {
             items = tarefas,
             key = { it.id }
         ) { tarefa ->
-            Column() {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(
-                       checked = tarefa.concluida,
-                       onCheckedChange = { viewModel.concluir(tarefa) }
-                    )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(color = Color.DarkGray, shape = RoundedCornerShape(corner = CornerSize(15.dp)))
+                    .wrapContentHeight()
+                    .padding(all = 10.dp)
+                    .fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = tarefa.concluida,
+                    onCheckedChange = { viewModel.concluir(tarefa) }
+                )
 
-                    Text(
-                        text = tarefa.conteudo,
-                        fontSize = 16.sp,
-                        textDecoration = if (tarefa.concluida) TextDecoration.LineThrough else null,
-                        maxLines = 3,
-                        modifier = Modifier.weight(1F)
-                    )
+                Spacer(Modifier.width(10.dp))
 
-                    Spacer(Modifier.width(10.dp))
-
-                    Button(
-                        onClick = { navegacao.navigate("telaEditar/${tarefa.id}") },
-                        shape = RoundedCornerShape(corner = CornerSize(5.dp)),
-                        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 1.dp),
-                        colors = ButtonColors(
-                            containerColor = Color.Yellow,
-                            contentColor = Color.Black,
-                            disabledContainerColor = Color.Yellow,
-                            disabledContentColor = Color.Black
-                        )
+                Column() {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.wrapContentHeight()
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.edit24),
-                            contentDescription = "Editar"
+                        Text(
+                            text = tarefa.conteudo,
+                            fontSize = 16.sp,
+                            textDecoration = if (tarefa.concluida) TextDecoration.LineThrough else null,
+                            maxLines = 3,
                         )
                     }
 
-                    Spacer(Modifier.width(10.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        color = Color.LightGray
+                    )
 
-                    Button(
-                        onClick = {
-                            tarefaSelec = tarefa;
-                            abrirDialog = true;
-                        },
-                        shape = RoundedCornerShape(corner = CornerSize(5.dp)),
-                        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 1.dp),
-                        colors = ButtonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White,
-                            disabledContainerColor = Color.Red,
-                            disabledContentColor = Color.White
-                        )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.delete24),
-                            contentDescription = "Deletar"
-                        )
+                    Row() {
+                        Button(
+                            onClick = { navegacao.navigate("telaEditar/${tarefa.id}") },
+                            shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                            modifier = Modifier.weight(1F),
+                            border = BorderStroke(width = 1.dp, color = Color.Yellow),
+                            colors = coresBotao
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.edit24),
+                                contentDescription = "Editar"
+                            )
+                        }
+
+                        Spacer(Modifier.width(10.dp))
+
+                        Button(
+                            onClick = {
+                                tarefaSelec = tarefa;
+                                abrirDialog = true;
+                            },
+                            shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                            modifier = Modifier.weight(1F),
+                            border = BorderStroke(width = 1.dp, color = Color.Red),
+                            colors = coresBotao
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.delete24),
+                                contentDescription = "Deletar"
+                            )
+                        }
                     }
-
                 }
-                HorizontalDivider()
             }
+            Spacer(Modifier.height(15.dp))
         }
     }
 }

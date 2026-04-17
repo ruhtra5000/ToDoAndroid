@@ -29,8 +29,7 @@ import com.example.todo.data.ViewModelGeral
 
 @Composable
 fun TelaAdicionar(navegacao: NavController) {
-    var conteudo by remember { mutableStateOf("") }
-
+    // Conexão com o banco
     val contexto = LocalContext.current
     val db = BancoProvider.getBanco(contexto)
     val dao = db.tarefaDao()
@@ -38,6 +37,10 @@ fun TelaAdicionar(navegacao: NavController) {
         factory = ViewModelFactory(dao)
     )
 
+    // Constantes
+    var conteudo by remember { mutableStateOf("") }
+
+    // Design
     Scaffold(
         topBar = { TopBarBack(navegacao) },
         modifier = Modifier.fillMaxSize()

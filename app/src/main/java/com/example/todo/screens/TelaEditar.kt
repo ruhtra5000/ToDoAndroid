@@ -30,6 +30,7 @@ import com.example.todo.data.ViewModelGeral
 
 @Composable
 fun TelaEditar(navegacao: NavController, id: Int) {
+    // Conexão com o banco
     val contexto = LocalContext.current
     val db = BancoProvider.getBanco(contexto)
     val dao = db.tarefaDao()
@@ -37,8 +38,10 @@ fun TelaEditar(navegacao: NavController, id: Int) {
         factory = ViewModelFactory(dao)
     )
 
+    // Constantes
     val tarefa = viewModel.tarefaPorId(id).collectAsState(null).value
 
+    // Design
     tarefa?.let {
         var novoConteudo by remember { mutableStateOf(tarefa.conteudo) }
 
